@@ -7,7 +7,7 @@
     (reduce str text))) 
 
 (defn- swapv
-  "Swap the position `i` and `j` on a vector `v`."
+  "Swap the position `pos-a` and `pos-b` on a vector `v`."
   [v pos-a pos-b]
   {:pre [(and (< -1 pos-a (count v)) (< -1 pos-b (count v)))]}
   (-> v
@@ -44,7 +44,29 @@
            state (vec (range 256))]
       (if (empty? c)
         {:state state
-         :initialisation-vector initialisation-vector}
+         :initialisation-vector initialisation-vector
+         :cipher-key key}
         (recur
          (rest c)
          (initialise-state state key))))))
+
+(defn cipher
+  "Cipher the `content` with the provided `params`."
+  [initial-content {initial-state :state :as _params}]
+  (loop [current-pos 0
+         rand-pos 0
+         state initial-state
+         content (mapv int initial-content)
+         output []]
+    (if (empty? content)
+      output
+      (let [updated-current-pos (-> current-pos inc (mod 256))
+            updated-rand-pos (-> rand-pos (+ (get state updated-current-pos)) (mod 256))
+            updated-state (swapv state updated-current-pos updated-rand-pos)
+            temp-pos (-> (+ (get updated-state updated-current-pos) (get updated-state updated-rand-pos)) (mod 256))
+            cipher-datum (get updated-state temp-pos)]
+        (recur updated-current-pos
+               updated-rand-pos
+               updated-state
+               (vec (next content))
+               (conj output (bit-xor cipher-datum (first content))))))))
