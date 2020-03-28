@@ -34,7 +34,6 @@
                          (get state i)
                          (int (get key (mod i key-length))))
                       256)]
-          (debug (format "Going to swap i: %s, j: %s" i j'))
           (recur
            (swapv state i j')
            (rest positions)

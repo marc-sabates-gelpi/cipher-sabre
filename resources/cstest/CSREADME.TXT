@@ -9,7 +9,7 @@ cssig.cs1    - Arnold Reinhold's sig. A puzzle; see cknight.gif
 chalng.cs1   - password is unpublished; $100 reward if you solve it
 csreadme.txt - this summary file
 
-Check the homepage at http://ciphersaber.gurus.com/
+Check the homepage at http://ciphersaber.gurus.org/
 
 
 MD5 hashes:
