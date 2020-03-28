@@ -1,7 +1,6 @@
 (ns cipher-sabre.cipher
-  (:require [clojure.edn :as edn]
-            [taoensso.timbre :refer [debug spy]])
-  (:import [java.security SecureRandom]))
+  (:require [clojure.edn :as edn])
+  (:import java.security.SecureRandom))
 
 (def ^:private range-256 (range 256))
 (def ^:private range-256-vec (vec range-256))
