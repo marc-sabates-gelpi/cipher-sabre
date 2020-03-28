@@ -46,33 +46,11 @@
   [path]
   (map int (slurp path)))
 
-(def ^:private hex-me {0 \0
-                       1 \1
-                       2 \2
-                       3 \3
-                       4 \4
-                       5 \5
-                       6 \6
-                       7 \7
-                       8 \8
-                       9 \9
-                       10 \a
-                       11 \b
-                       12 \c
-                       13 \d
-                       14 \e
-                       15 \f})
-
-(defn- int->hex
-  [n]
-  (str (hex-me (quot n 16)) (hex-me (rem n 16))))
-
 (defn write-hex-file
   [path content]
-  (spit path (transduce (comp (map #(mod % 256))
-                              (map int->hex))
-                        str
-                        content)))
+  (spit path (apply str (sequence (comp (map #(mod % 256))
+                                        (map (partial format "%02x")))
+                                  content))))
 
 (defn cipher-command
   ([key path]
