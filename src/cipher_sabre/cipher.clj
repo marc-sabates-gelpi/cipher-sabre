@@ -1,14 +1,17 @@
 (ns cipher-sabre.cipher
   (:require [clojure.edn :as edn]
-            [taoensso.timbre :refer [debug spy]]))
+            [taoensso.timbre :refer [debug spy]])
+  (:import [java.security SecureRandom]))
 
-(def ^:private characters (map char (range 33 127)))
 (def ^:private range-256 (range 256))
 (def ^:private range-256-vec (vec range-256))
 
-(defn random-chars
+(defn random
   [n]
-  (take n (repeatedly #(rand-nth characters)))) 
+  (let [sr (SecureRandom/getInstance "NativePRNG")
+        buffer (byte-array n)
+        _ (.nextBytes sr buffer)]
+    (map #(mod % 256) buffer))) 
 
 (defn- swapv
   "Swap the position `pos-a` and `pos-b` on a vector `v`."

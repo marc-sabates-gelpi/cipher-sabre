@@ -20,7 +20,7 @@
   ([key file]
    (cipher-command key file nil))
   ([key file cycles]
-   (let [iv (cipher/random-chars 10)]
+   (let [iv (cipher/random 10)]
      (->> (cipher/init-and-cipher (map int (slurp file)) key iv cycles)
           (concat (map int iv))
           (write-binary-file "ciphered.out")))))
