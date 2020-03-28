@@ -22,14 +22,13 @@
 
 (defn- initialise-state
   "Shuffle state 256 times."
-  [initial-state key]
+  [{initial-state :state initial-j :j} key]
   {:pre [(and (vector? key) (vector? initial-state))]}
   (let [key-length (count key)]
     ;; `i` and `j` are RC4 terminology
     (loop [state initial-state
            positions range-256
-           j 0 ;; FIXME: CipherSabre-2 would init to 0 only once
-           ] 
+           j initial-j] 
       (if (seq positions)
         (let [i (first positions)
               j' (mod (+ j
@@ -40,17 +39,18 @@
            (swapv state i j')
            (rest positions)
            j'))
-        state))))
+        {:state state
+         :j j}))))
 
 (defn- initialise-with-n-cycles
   "Initialise the state SBox cycling it n times."
   ([key iv] (initialise-with-n-cycles key iv 1))
   ([key iv cycles]
    (let [key (vec (concat key iv))]
-     (loop [c cycles state range-256-vec]
+     (loop [c cycles internal-state {:state range-256-vec :j 0}]
        (if (pos? c)
-         (recur (dec c) (initialise-state state key))
-         state)))))
+         (recur (dec c) (initialise-state internal-state key))
+         (:state internal-state))))))
 
 (defn- cipher
   "Cipher the `content` with the provided `state`."
