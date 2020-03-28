@@ -1,0 +1,272 @@
+# CipherSaber FAQ
+
+Here are some questions that have been asked (or ought to be asked) about CipherSaber:
+
+## "What is CipherSaber?"
+
+CipherSaber is an ultra-simple encryption method. Anyone with a little programming skill can write a CipherSaber program in as few as 16 lines of Basic. You can find out how at: http://ciphersaber.gurus.org
+
+## "Is CipherSaber a serious proposal or are you just trying to make a point?"
+
+Both, actually. The point is that encryption technology is too simple to be suppressed. But CipherSaber is also a serious encryption tool that is very useful. CipherSaber uses a respected algorithm called RC4 to provide very high strength.
+
+## "Isn't PGP a lot better than CipherSaber?"
+
+PGP is certainly better in most cases. It has important features that CipherSaber lacks, including public keys and electronic signatures. It is also available as an easy to use freeware plug-in for popular electronic mail programs such as Eudora. Everyone should get PGP and learn how to use it, if they possibly can. Visit http://www.pgp.com and http://www.pgpi.org for more information on PGP.
+
+##"Does CipherSaber have any advantages over PGP?"
+
+Yes, a few. Compared to PGP, CipherSaber is more:
+
+- Portable. CipherSaber is small enough to implement on just about any computer that can be programmed, including the Palm Pilot, HP palm tops, Windows CE hand helds, Apple's late, lamented Newton, Java-based network computers, older personal computers, like the Apple II or Commodore 64, microcontrollers like BasicStamp and even legacy mainframes and minis.
+- Transparent. Because CipherSaber is so simple, it is easy to inspect the source code for errors or hidden traps that leak information. While PGP, Inc. publishes the PGP source code, you still have to trust the few individuals that actually bother to inspect it carefully. There is additional trust involved in believing that the copy of PGP you have was compiled from the source code that they inspected. I have faith in the integrity of the PGP folks, but cryptography is not about trusting people.
+- Resistant to suppression. They can't take CipherSaber away from you. The U.S. Congress is seriously considering banning the distribution of strong encryption systems that block government access to plaintext, such as PGP. The head of the FBI wants the ban to apply even within the United States. The same law might even ban the distribution of CipherSaber programs, but the knowledge needed to write ones own CipherSaber would be much harder to suppress.
+- Educational and fun. Writing your own encryption program will teach you a lot about cryptography and it's a blast when your program finally is able to decipher the sample messages. CipherSaber transforms cryptography from an obscure and difficult technology into a basic skill of citizenship. 
+
+## "Can I use CipherSaber with PGP?"
+
+PGP cannot read or write CipherSaber encoded files, nor can CipherSaber read PGP files. However PGP does provide an excellent way to exchange CipherSaber keys with other people. Let's say you are going on vacation and want to exchange private messages with a friend, but you will only be bringing a palm top computer with you. You can use PGP on your desktop computer to tell your friend before you leave what CipherSaber key you will use.
+
+## "Is CipherSaber secure?"
+
+RC4 is widely used on the Internet, but significant weaknesses have been identified. I now recommend using CipherSaber-2 for additional security. See the main CipherSaber page for more detailed information on the security issues.
+
+## "Where can I get RC4?"
+
+RC4 is described in the second edition of Bruce Schneier's book Applied Cryptography. You can find it on the Internet as a draft IETF standard called ARCFOUR or by searching on "rc4 source" using your favorite search engine. Finally, here is the RC4 algorithm in plain English:
+
+- RC4 uses two arrays of eight bit bytes. The "state" array is 256 bytes long and holds a permutation of the numbers 0 through 255. The "key" array can be of any length up to 256 bytes. RC4 also uses two index variables i and j that start off as zero. All variables are eight bits long and all addition is performed modulo 256.
+
+- RC4 has two phases: key setup and ciphering. The setup phase is only done once per message and starts by initializing the entire state array so that the first state element is zero, the second is one, the third is two, and so on.
+
+- The state array is then subjected to 256 mixing operations using a loop that steps i through the values from zero to 255. Each mixing operation consists of two steps:
+
+    1. Add to the variable j the contents of the ith element of the state array and the nth element of the key, where n is equal to i modulo the length of the key.
+    2. Swap the ith and jth elements of the state array. 
+
+- After the entire mixing loop is completed, i and j are set to zero.
+
+- During the ciphering operation, the following steps are performed for each byte of the message:
+
+    1. The variable i is incremented by one.
+    2. The contents of the ith element of the state array is then added to j.
+    3. The ith and jth elements of the state array are swapped and their contents are added together to form a new value n.
+    4. The nth element of the state array is then combined with the message byte, using a bit by bit exclusive-or operation, to form the output byte. 
+
+- The same ciphering steps are performed for encryption and for decryption.
+
+Note that in CipherSaber the RC4 key array consists of the user's CipherSaber key followed by the 10 byte initialization vector (IV).
+
+- When you are encrypting a file, you generate a new IV randomly and write out the 10 bytes before you write out the encrypted file bytes.
+- When you are decrypting the file, you read the IV from the first 10 bytes of the encrypted file. 
+
+That's all there is!
+
+## "How do I test my CipherSaber?"
+
+If you can decrypt the test samples provided at http://ciphersaber.gurus.org and if you can decipher files that you have enciphered, your program is working properly. You must also make sure that the IV generation is properly generating random values.
+
+# "My CipherSaber program does not work. What should I do?"
+
+Here are some debugging tips:
+
+- Make sure you are not reading or writing encrypted files as text files. You must use binary mode for file I/O.
+- If you are writing in the C language, be sure to store bytes as unsigned char.
+- Watch out for classic indexing problems. Do arrays in you chosen programming language start with 0 or 1?
+- Make sure you are writing out a random 10 byte IV when you encrypt and are reading the IV from the start of the file when you decrypt.
+- If your program still does not work, put in some statements to print out the S array after the key setup step. Then run your program to decrypt the file cstest1.cs1 using asdfg as the key. Here is how the S array should look:
+
+        file? cstest1.cs1
+        key? asdfg
+        176 32 49 160 15 112 58 8 186 19 50 161 60 17 82 153
+        37 141 131 127 59 2 165 103 98 53 9 57 41 150 174 64
+        36 62 191 154 44 136 149 158 226 113 230 227 247 155 221 34
+        125 20 163 95 128 219 1 181 201 146 88 204 213 80 143 164
+        145 234 134 248 100 77 188 235 76 217 194 35 75 99 126 92
+        243 177 52 180 83 140 198 42 151 18 91 33 16 192 101 48
+        97 220 114 110 124 72 139 218 142 118 81 84 31 29 195 68
+        209 172 200 214 93 240 61 22 206 123 152 7 203 10 119 171
+        79 250 109 137 199 167 11 104 211 129 208 216 178 207 242 162
+        30 120 65 115 87 170 47 69 244 212 45 85 73 222 225 185
+        63 0 179 210 108 245 202 46 96 148 51 173 24 182 89 116
+        3 67 205 94 231 23 21 13 169 215 190 241 228 132 252 4
+        233 56 105 26 12 135 223 166 238 229 246 138 239 54 5 130
+        159 236 66 175 189 147 193 237 43 40 117 157 86 249 74 27
+        156 14 133 251 196 187 197 102 106 39 232 255 121 122 253 111
+        90 38 55 70 184 78 224 25 6 107 168 254 144 28 183 71
+
+## "How can I use CipherSaber to send and receive files in text format rather than binary?"
+
+It is sometimes hard to exchange binary files. For example, you might want to use CipherSaber to converse in private on a Chat room or IRC channel. Also some mail programs do not let you attach files. While there are a number of ways to convert a binary file in to text characters -- a process sometimes called ascii armouring -- I recommend converting each byte into two hexadecimal characters. This is simple to do since most programming languages support hex input and output. When reading an ascii armored CipherSaber file you should just ignore white space characters: space, tab, return, enter, or newline. A simple example of ascii armored CipherSaber output is included in the cstest1.cs1 example on the CipherSaber home page.
+
+## "What mistakes can weaken CipherSaber"
+
+There are several ways CipherSaber can be weakened by improper use:
+
+- Using a key or passphrase that is too short or too predictable. A passphrase shorter than 12 characters or made up of three of fewer dictionary words is not secure enough. See the Diceware page for a safe way to generate strong keys.
+- Encrypting two different messages with the same initial vector and same key. It is important that the method you use to generate the ten byte initial vector never generate the same values twice. Be very careful when using the (so-called) random number generators that come with most programming systems. For example, Microsoft's Qbasic's random number generator only uses a 24-bits. The standard way to initialize it, through an INITIALIZE TIMER statement provides even less randomness. See A Cryptanalysis of CipherSaber for more details.
+- Running CipherSaber on a multi-user computer where other users can see what you are doing and discover your key.
+- Allowing your program to echo your passphrase on your computer screen. Someone could look over your sholder and see your passphrase. Also most computer displays radiate radio signals that can be picked up at a distance with special equipment that can show what is being displayed. 
+
+There are many other security risks inherent in using computers for encryption. See my Chapter "Commonsense and Security" in Internet Secrets from IDG Books Worldwide.
+
+## "Why not use RC4 itself as a random number generator for generating IVs?"
+
+Doing so makes your Ciphersaber program a bit more complex, but RC4 is a powerful pseudo-random number generator, with a much bigger internal state than the ones that come with most programming systems. Use the date, time and something unique to you as the RC4 key for the IV generation. If you know how to get key-press timings from your computer, you can use them in the key as well. I have an example of this in Java.
+
+The danger in making your own random number generator is that if it has a bug, your Ciphersaber program will appear to work but may not be secure. Also note that RC4 is not considerd a suitable pseudo-random number generator for demanding statistical applications.
+
+## "Any other housekeeping I should be aware of?"
+
+Your program should set all variables and arrays that it uses to zero as soon as it is done with them. Be careful when using optimizing compilers that may strip out statements that set variables to zero at the end of a program if they appear not to alter a variable that will be used later. One solution is to set the variables to zero using a subroutine call.
+
+## "Why is IV after the key?"
+
+Placing the IV after the key reduces some potential weakness. See A Cryptanalysis of CipherSaber for more details.
+
+## "How do I make up safe keys?"
+
+You can makeup random letter strings quite easily by writing the letters of the alphabet on 26 identical objects and putting them in a bag or box. Scrabble letters work quite well, just be sure to use only one of each letter. Then pull letters out one at a time, returning the letter to the bag and shaking after each pick. Keys made this way should be at least 20 characters long.
+
+For an even better way to make up keys that are safe and easy to remember, visit the Diceware page. I recommend using a Diceware passphrase that is 6 or 7 words long as a CipherSaber key.
+
+## "How do I exchange keys with my friends?"
+
+Unlike PGP, CipherSaber requires that you make up one key for each person, or group of people, with whom you want to exchange messages. You have to arrange to get the key to each person in a safe way. Generally that means in person. This can get messy if you have a lot of different correspondents.
+
+Another approach is to use public key technology. Our new open-source Big Number Calculator applet lets you manually perform many of the calculations used in public key cryptography including key exchange. Follow the directions there. (The applet uses the BigInteger class in the latest versions of Java, so you'll need Netscape 6, Internet Explorer 5 or Opera to use it.)
+
+## What is CipherSaber-2?
+
+CipherSaber-2 is a modification to Ciphersaber-1 that addresses concerns raised about possible statistical weaknesses in RC4. In CipherSaber-2 the entire state array mixing loop is repeated N times, where N is n number that the sender and receiver agree upon. When N=1, CipherSaber-2 is the same as CipherSaber-1.
+
+Because of a recent successful attack on RC4, I now recommend using CipherSaber-2 in place of CipherSaber-1, with a value of N=20 or more. You should first implement CipherSaber-1 and verify that it works using the text vectors on the main CipherSaber page. It is then a simple matter to modify your program to do CipherSaber-2. The key setup portion of your CipherSaber-1 program will contain a loop that looks like this:
+
+    j=0
+    for i = 0 to 255
+    calculate j, swap S(i) and S(j)
+    end 
+
+To convert to CipherSaber-2, just add another loop to these statements:
+
+    j=0
+    for k = 1 to N
+    for i = 0 to 255
+    calculate j, swap S(i) and S(j)
+    end
+    end
+
+That's all there is to it. Here is a sample file encoded with CipherSaber-2 using N = 10 and a key of "asdfg":
+
+    ba 9a b4 cf fb 77 00 e6 18 e3 82 e8 fc c5 ab 98
+    13 b1 ab c4 36 ba 7d 5c de a1 a3 1f b7 2f b5 76
+    3c 44 cf c2 ac 77 af ee 19 ad
+     
+
+Note: An earier CS-2 test file was posted here that began:
+
+    0e e3 f9 b2 40 11 fc 3e ...
+
+This file was not correct. Sorry!
+
+## "They couldn't really ban PGP in the US, could they?"
+
+Congress can certainly pass such a law. Hopefully the Supreme Court would strike such a law down as unconstitutional, but don't count on that. On the other hand, the widespread distribution of CipherSaber would be a strong argument against a crypto ban's constitutionality.
+
+Other countries have already banned unlicensed use of strong cryptography. (There is some good news: France, which has banned strong crypto for decades, has recended its ban.)
+Didn't a major U.S. court rule that encryption source code is protected as free speach?
+
+Yes. The Court of Appeals for the Ninth Circuit has issued such a ruling in the case of Bernstein vs USDOJ. The Court held that the US export regulations on encryption source code were unconstitutional and struck them down.
+
+The Court of Appeals majority clearly understood the greater issues involved:
+
+    "Second, we note that the government's efforts to regulate
+    and control the spread of knowledge relating to encryption
+    may implicate more than the First Amendment rights of cryp-
+    tographers. In this increasingly electronic age, we are all
+    required in our everyday lives to rely on modern technology
+    to communicate with one another. This reliance on electronic
+    communication, however, has brought with it a dramatic dim-
+    inution in our ability to communicate privately. Cellular
+    phones are subject to monitoring, email is easily intercepted,
+    and transactions over the internet are often less than secure.
+    Something as commonplace as furnishing our credit card
+    number, social security number, or bank account number puts
+    each of us at risk. Moreover, when we employ electronic
+    methods of communication, we often leave electronic
+    "fingerprints" behind, fingerprints that can be traced back to
+    us. Whether we are surveilled by our government, by crimi-
+    nals, or by our neighbors, it is fair to say that never has our
+    ability to shield our affairs from prying eyes been at such a
+    low ebb. The availability and use of secure encryption may
+    offer an opportunity to reclaim some portion of the privacy
+    we have lost. Government efforts to control encryption thus
+    may well implicate not only the First Amendment rights of
+    cryptographers intent on pushing the boundaries of their sci-
+    ence, but also the constitutional rights of each of us as poten-
+    tial recipients of encryption's bounty. Viewed from this
+    perspective, the government's efforts to retard progress in
+    cryptography may implicate the Fourth Amendment, as well
+    as the right to speak anonymously, see McIntyre v. Ohio Elec-
+    tions Comm'n, 115 S. Ct. 1511, 1524 (1995) , the right against
+    compelled speech, see Wooley v. Maynard, 430 U.S. 705, 714
+    (1977), and the right to informational privacy, see Whalen v.
+    Roe, 429 U.S. 589, 599-600 (1977). While we leave for
+    another day the resolution of these difficult issues, it is impor-
+    tant to point out that Bernstein's is a suit not merely concern-
+    ing a small group of scientists laboring in an esoteric field, but
+    also touches on the public interest broadly defined."
+
+## "Didn't the US Government just liberalize encryption export?"
+
+Yes. The new rules announced in 1999 were a significant step in the right direction. In particular, open source code is largely, but not completely, deregulated. You can find more information at the Bureau of Export Administration's web site http://www.bxa.doc.gov/ Some branches of the U.S. government are not happy with the new rules and they could be changed in the future. Spreading the word about CipherSaber makes such a change less likely.
+
+## "Are there other threats to cryptographic freedom?"
+
+Yes. The publishing industry is is very concerned about the danger they think the Internet poses to copyrights. They got a law passed in the U.S. called the Digital Millenium Copyright Act that makes it illegal to break the encryption used to protect copyrighted works. Interpreted broadly, as the movie industry is trying to do in a case about a program that broke the encryption used for DVD movies, this law could be used to shut down all research on encryption. You can find out more about this case, including our amicus brief at cryptome.org.
+
+## "Does it violate CiberKnight rules to give a friend a working CipherSaber program?"
+
+It is OK as long as you are not unlawfully exporting it from the United States in the process (see above). Widespread distribution of CipherSabers is encouraged as long as it is within the law. However, you should not display a CipherKnight certificate unless you wrote the program that decrypted it yourself.
+
+## "Is it ethical to use RC4?"
+
+RSA Division of Security Dynamics still considers RC4 to be a proprietary algorithm. Under US law, inventors have two ways to protect an invention. They can disclose the invention in exchange for a patent, which gives them exclusive rights for a limited time, or they can keep the invention a trade secret for a long as they can. If they choose the secrecy path they run the risk of their invention becoming public knowledge.
+
+RC4 was not patented. Protecting mass market computer programs as trade secrets is especially risky since the source code of such programs can be recovered by a process know as disassembly or reverse engineering. California law explicitly recognizes reverse engineering as a legitimate way of discovering a trade secret. The person who posted the source code for RC4 to the Internet claimed to have reverse engineered it. There is no way to verify that the poster was telling the truth, but RC4 is certainly simple enough to have been reverse engineered.
+
+As a matter or courtesy, I recommend that anyone using CipherSaber in a commercial product attempt to obtain a license from RSA. As I understand the law such a license is not legally required, however I am not a lawyer. Ethically, I do not believe a license is required for individual or educational use.
+## "What is Jury nullification?"
+
+Jury nullification is the idea that a jury of common citizens can prevent the government from enforcing laws the jury members consider unfair or oppressive by simply refusing to convict a fellow citizen accused of violating that law. Here are some links to more information about jury nullification:
+
+Fully Informed Jury Association http://www.fija.org/
+
+"The existence of a criminal jury's power to nullify is currently as well settled as any other rule of constitutional law. It is a cornerstone of American criminal procedure. The far more controversial issue--and much more frequently litigated--is that perennial dilemma: What should we tell the kids? Should (or must) the judge tell the jurors anything about their power (or right) to nullify? Should the judge at least allow the defense to tell them? If so, how much should we tell them, and how should we do it? These issues lie at the very core of our criminal justice system, and have been debated by lawyers, journalists, philosophers, and patriots for two centuries. It is therefore ironic that these questions have, at least in recent decades, generated one of the most remarkable displays of unanimity ever orchestrated by state and federal courts on any issue of law in American history.
+
+It would take at most four words to fairly summarize the unanimous consensus of state and federal judges on the idea of telling jurors about their power to nullify: "Forget it. No way." Even while extolling the beauty and majesty of our commitment to the jury's constitutional role as a guardian against tyranny, no state or federal appellate court in decades has held that a trial judge is even permitted--much less required--to explicitly instruct the jurors on their undisputed power to return a verdict of not guilty in the interests of justice. " -- James Joseph Duane, Litigation Summer, 1996
+
+## "Would the America's Founding Fathers have approved of cryptography?"
+
+I believe they would have. Our founding fathers were aware of cryptography and used such techniques to protect their correspondence from prying eyes. In fact Thomas Jefferson, the author of the U.S. Bill of Rights was a very capable cryptographer. NSA Historian David Kahn calls Jefferson "the Father of American Cryptography" in his book The Codebreakers.
+
+## "What does the fourth amendment to the U.S. Constitution actually say?"
+
+    "The right of the people to be secure in their persons, houses, papers, and effects, against unreasonable searches and seizures, shall not be violated, and no Warrants shall issue, but upon probable cause, supported by Oath or affirmation, and particularly describing the place to be searched, and the persons or things to be seized."
+
+## "Aren't you making it easier for terrorists, drug dealers and pedophiles?"
+
+Given how simple strong cryptography is, there is no reason to think it can be kept out of the hands of criminals. Yet this "evil troika" is constantly used to justify erosion of our civil liberties. The most dangerous terrorists are trained to keep silent and the drug industry has flourished despite decades of encryption-free wiretapping.
+
+There were 1491 wiretaps approved by state and federal judges in the US in 2001. 78% were for drug cases. The average wire tap cost the Federal government $74,207. Over the last 10 years, wiretaps have accounted for an average of less than 2500 convictions per year. Hence wiretaps convict only a tiny fraction of the US prison population, which is now over 1.3 million.
+
+## "Where can I learn more about CipherSaber?"
+
+Visit http://ciphersaber.gurus.org
+
+Arnold G. Reinhold
+
+Back to CipherSaber Home Page
+Rev. 1999-4-10, 2000-5-7, 2001-2-1, 2001-5-21, 2001-7-27, 2003-2-16
+
+Copyright © 1999-2003 by Arnold Reinhold. This page may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at http://www.opencontent.org/openpub/) The requirement that the author's name appear on the outer surface of any book containing this material is hereby waved.
