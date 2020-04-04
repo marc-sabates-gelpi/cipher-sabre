@@ -7,6 +7,6 @@ http://ciphersaber.gurus.org
 `clj -m cipher-sabre.core "key" "file"`
 
 # TODO
-*** TODO Extract IO ns
+*** DONE Extract IO ns
 *** TODO Better UX, including safe key prompting
 *** TODO Apply `Abstraction Barriers`
