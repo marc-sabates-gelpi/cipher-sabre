@@ -1,6 +1,6 @@
 (ns cipher-sabre.core
   (:require [cipher-sabre.cipher :as cipher]
-            [cipher-sabre.io :as io]))
+            [cipher-sabre.file-io :as file-io]))
 
 (defn- text-file->ints
   [path]
@@ -13,17 +13,17 @@
    (let [iv (cipher/random 10)]
      (->> (cipher/init-and-cipher (text-file->ints path) key iv cycles)
           (concat (map int iv))
-          (io/write-hex-file "ciphered.out")))))
+          (file-io/write-hex-file "ciphered.out")))))
 
 (defn decipher-command
   ([key path]
    (decipher-command key path nil))
   ([key path cycles]
-   (let [all (map int (io/read-ciphered-file path))
+   (let [all (map int (file-io/read-ciphered-file path))
          iv (take 10 all)
          content (drop 10 all)]
      (->> (cipher/init-and-cipher content key iv cycles)
-          (io/write-binary-file "clear-text.out")))))
+          (file-io/write-binary-file "clear-text.out")))))
 
 (defn run-command
   [command key path cycles]

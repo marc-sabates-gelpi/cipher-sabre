@@ -1,4 +1,4 @@
-(ns cipher-sabre.io
+(ns cipher-sabre.file-io
   (:require [byte-streams :as streams]
             [clojure.java.io :refer [file output-stream]]
             [clojure.edn :as edn]))
