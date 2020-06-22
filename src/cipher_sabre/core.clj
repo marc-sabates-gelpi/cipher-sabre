@@ -13,7 +13,7 @@
    (let [iv (cipher/random 10)]
      (->> (cipher/init-and-cipher (text-file->ints path) key iv cycles)
           (concat (map int iv))
-          (file-io/write-hex-file "ciphered.out")))))
+          (file-io/write-hex-file "cipher.out")))))
 
 (defn decipher-command
   ([key path]
@@ -23,7 +23,7 @@
          iv (take 10 all)
          content (drop 10 all)]
      (->> (cipher/init-and-cipher content key iv cycles)
-          (file-io/write-binary-file "clear-text.out")))))
+          (file-io/write-binary-file "clear.out")))))
 
 (defn run-command
   [command key path cycles]

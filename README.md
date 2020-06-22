@@ -8,5 +8,6 @@ http://ciphersaber.gurus.org
 
 # TODO
 *** DONE Extract IO ns
+*** TODO Fix cknight.cs1 decipher
 *** TODO Better UX, including safe key prompting
 *** TODO Apply `Abstraction Barriers`
