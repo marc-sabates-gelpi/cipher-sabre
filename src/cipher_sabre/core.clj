@@ -37,4 +37,4 @@
   [command key path & [cycles]]
   (if (and (seq key) (seq path))
     (run-command command key path cycles)
-    (println "key and file are mandatory.. Try again with clj -Arun \"key\" \"file\"")))
+    (println "key and file are mandatory.. Try again with clj -Arun \"cipher\"/\"decipher\" key file [cycles]")))
